@@ -23,22 +23,19 @@ export default function StockSentimentChart({ data }: StockSentimentChartProps) 
     hour: typeof item.hour === 'string' ? parseInt(item.hour, 10) : item.hour,
     "4_hour": typeof item["4_hour"] === 'string' ? parseInt(item["4_hour"], 10) : item["4_hour"],
     day: typeof item.day === 'string' ? parseInt(item.day, 10) : item.day,
-    // Add mock data for demonstration - these would come from your API in production
-    "2_day": (typeof item.day === 'string' ? parseInt(item.day, 10) : item.day) * 2,
-    week: (typeof item.day === 'string' ? parseInt(item.day, 10) : item.day) * 7,
-    "2_week": (typeof item.day === 'string' ? parseInt(item.day, 10) : item.day) * 14,
-    prior_sentiment: "Negative" // Example default, adjust as needed
+    // Fields not from API are left undefined
+    "2_day": undefined as number | undefined,
+    week: undefined as number | undefined,
+    "2_week": undefined as number | undefined,
+    prior_sentiment: undefined as string | undefined
   }));
 
-  // Calculate percentage changes for the second table
+  // Calculate percentage changes for the second table (only for available data)
   const percentChangeData = processedData.map((item) => {
-    // Calculate percentage changes
-    const hourChange = item.hour !== 0 ? ((item.hour as number) / 1) * 100 : 0; // Example calculation
+    // Calculate percentage changes only for available fields
+    const hourChange = item.hour !== 0 ? ((item.hour as number) / 1) * 100 : 0;
     const fourHourChange = item.hour !== 0 ? (((item["4_hour"] as number) - (item.hour as number)) / (item.hour as number)) * 100 : 0;
     const dayChange = item["4_hour"] !== 0 ? (((item.day as number) - (item["4_hour"] as number)) / (item["4_hour"] as number)) * 100 : 0;
-    const twoDayChange = item.day !== 0 ? (((item["2_day"] as number) - (item.day as number)) / (item.day as number)) * 100 : 0;
-    const weekChange = item["2_day"] !== 0 ? (((item.week as number) - (item["2_day"] as number)) / (item["2_day"] as number)) * 100 : 0;
-    const twoWeekChange = item.week !== 0 ? (((item["2_week"] as number) - (item.week as number)) / (item.week as number)) * 100 : 0;
 
     return {
       Rank: item.Rank,
@@ -46,9 +43,10 @@ export default function StockSentimentChart({ data }: StockSentimentChartProps) 
       hourChange,
       fourHourChange,
       dayChange,
-      twoDayChange,
-      weekChange,
-      twoWeekChange,
+      // Fields not calculated from API data are left undefined with explicit type annotations
+      twoDayChange: undefined as number | undefined,
+      weekChange: undefined as number | undefined,
+      twoWeekChange: undefined as number | undefined,
       sentiment: item.sentiment,
       prior_sentiment: item.prior_sentiment
     };
@@ -90,11 +88,11 @@ export default function StockSentimentChart({ data }: StockSentimentChartProps) 
                   <td className="border p-2 text-right">{Number(item.hour).toLocaleString()}</td>
                   <td className="border p-2 text-right">{Number(item["4_hour"]).toLocaleString()}</td>
                   <td className="border p-2 text-right">{Number(item.day).toLocaleString()}</td>
-                  <td className="border p-2 text-right">{Number(item["2_day"]).toLocaleString()}</td>
-                  <td className="border p-2 text-right">{Number(item.week).toLocaleString()}</td>
-                  <td className="border p-2 text-right">{Number(item["2_week"]).toLocaleString()}</td>
+                  <td className="border p-2 text-right">-</td>
+                  <td className="border p-2 text-right">-</td>
+                  <td className="border p-2 text-right">-</td>
                   <td className="border p-2 text-center">{item.sentiment}</td>
-                  <td className="border p-2 text-center">{item.prior_sentiment}</td>
+                  <td className="border p-2 text-center">-</td>
                 </tr>
               ))}
             </tbody>
@@ -131,11 +129,11 @@ export default function StockSentimentChart({ data }: StockSentimentChartProps) 
                   <td className="border p-2 text-right">{item.hourChange.toFixed(1)}%</td>
                   <td className="border p-2 text-right">{item.fourHourChange.toFixed(1)}%</td>
                   <td className="border p-2 text-right">{item.dayChange.toFixed(1)}%</td>
-                  <td className="border p-2 text-right">{item.twoDayChange.toFixed(1)}%</td>
-                  <td className="border p-2 text-right">{item.weekChange.toFixed(1)}%</td>
-                  <td className="border p-2 text-right">{item.twoWeekChange.toFixed(1)}%</td>
+                  <td className="border p-2 text-right">-</td>
+                  <td className="border p-2 text-right">-</td>
+                  <td className="border p-2 text-right">-</td>
                   <td className="border p-2 text-center">{item.sentiment}</td>
-                  <td className="border p-2 text-center">{item.prior_sentiment}</td>
+                  <td className="border p-2 text-center">-</td>
                 </tr>
               ))}
             </tbody>
