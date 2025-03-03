@@ -1,6 +1,6 @@
 import { fetchStockSentiment } from '@/lib/api';
 import { StockSentimentTable } from '@/components/stock-sentiment-table';
-import { StockSentimentChart } from '@/components/stock-sentiment-chart';
+import  StockSentimentChart from '@/components/stock-sentiment-chart';
 import { StockSentimentSummary } from '@/components/stock-sentiment-summary';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { BarChart3, RefreshCcw } from 'lucide-react';
