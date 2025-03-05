@@ -19,7 +19,7 @@ export default async function Home() {
           <div className="flex items-center gap-4">
             <div className="flex items-center text-sm text-muted-foreground">
               <RefreshCcw className="mr-1 h-4 w-4" />
-              Auto-refreshes every 5 minutes
+              Auto-refreshes every 1 hour
             </div>
             <ThemeToggle />
           </div>
