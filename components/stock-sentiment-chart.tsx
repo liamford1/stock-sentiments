@@ -9,7 +9,7 @@ interface StockSentiment {
   hour: string | number;
   "4_hour": string | number;
   day: string | number;
-  sentiment: string;
+  Sentiment: string;
 }
 
 interface StockSentimentChartProps {
@@ -47,7 +47,7 @@ export default function StockSentimentChart({ data }: StockSentimentChartProps) 
       twoDayChange: undefined as number | undefined,
       weekChange: undefined as number | undefined,
       twoWeekChange: undefined as number | undefined,
-      sentiment: item.sentiment,
+      sentiment: item.Sentiment,
       prior_sentiment: item.prior_sentiment
     };
   });
@@ -70,12 +70,12 @@ export default function StockSentimentChart({ data }: StockSentimentChartProps) 
               <tr className="bg-gray-200 dark:bg-gray-800">
                 <th className="border p-2">Rank</th>
                 <th className="border p-2">Stock Ticker</th>
-                <th className="border p-2">hour/hour</th>
-                <th className="border p-2">4 hour/4 hour</th>
-                <th className="border p-2">day/day</th>
-                <th className="border p-2">2 day/2 day</th>
-                <th className="border p-2">week/week</th>
-                <th className="border p-2">2 week/2 week</th>
+                <th className="border p-2">Hour</th>
+                <th className="border p-2">4 Hour</th>
+                <th className="border p-2">Day</th>
+                <th className="border p-2">2 Day</th>
+                <th className="border p-2">Week</th>
+                <th className="border p-2">2 Week</th>
                 <th className="border p-2">Sentiment Indicator</th>
                 <th className="border p-2">Prior Sentiment</th>
               </tr>
@@ -91,7 +91,7 @@ export default function StockSentimentChart({ data }: StockSentimentChartProps) 
                   <td className="border p-2 text-right">-</td>
                   <td className="border p-2 text-right">-</td>
                   <td className="border p-2 text-right">-</td>
-                  <td className="border p-2 text-center">{item.sentiment}</td>
+                  <td className="border p-2 text-center">{item.Sentiment}</td>
                   <td className="border p-2 text-center">-</td>
                 </tr>
               ))}
@@ -111,12 +111,12 @@ export default function StockSentimentChart({ data }: StockSentimentChartProps) 
               <tr className="bg-gray-200 dark:bg-gray-800">
                 <th className="border p-2">Rank</th>
                 <th className="border p-2">Stock Ticker</th>
-                <th className="border p-2">hour/hour</th>
-                <th className="border p-2">4 hour/4 hour</th>
-                <th className="border p-2">day/day</th>
-                <th className="border p-2">2 day/2 day</th>
-                <th className="border p-2">week/week</th>
-                <th className="border p-2">2 week/2 week</th>
+                <th className="border p-2">Hour</th>
+                <th className="border p-2">4 Hour</th>
+                <th className="border p-2">Day</th>
+                <th className="border p-2">2 Day</th>
+                <th className="border p-2">Week</th>
+                <th className="border p-2">2 Week</th>
                 <th className="border p-2">Sentiment Indicator</th>
                 <th className="border p-2">Prior Sentiment</th>
               </tr>

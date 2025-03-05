@@ -7,17 +7,17 @@ import { TrendingDown, TrendingUp } from "lucide-react"
 export function StockSentimentSummary({ data }: { data: StockSentiment[] }) {
   // Calculate summary statistics
   const totalStocks = data.length
-  const positiveStocks = data.filter(stock => stock.sentiment === "positive").length
-  const negativeStocks = data.filter(stock => stock.sentiment === "negative").length
+  const positiveStocks = data.filter(stock => stock.Sentiment === "positive").length
+  const negativeStocks = data.filter(stock => stock.Sentiment === "negative").length
   const positivePercentage = Math.round((positiveStocks / totalStocks) * 100)
   
   // Find top positive and negative stocks
   const topPositive = [...data]
-    .filter(stock => stock.sentiment === "positive")
+    .filter(stock => stock.Sentiment === "positive")
     .sort((a, b) => parseInt(b.day) - parseInt(a.day))[0]
     
   const topNegative = [...data]
-    .filter(stock => stock.sentiment === "negative")
+    .filter(stock => stock.Sentiment === "negative")
     .sort((a, b) => parseInt(b.day) - parseInt(a.day))[0]
 
   return (

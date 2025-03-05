@@ -4,7 +4,7 @@ import  StockSentimentChart from '@/components/stock-sentiment-chart';
 import { StockSentimentSummary } from '@/components/stock-sentiment-summary';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { BarChart3, RefreshCcw } from 'lucide-react';
-
+export const dynamic = 'force-dynamic'
 export default async function Home() {
   const stockData = await fetchStockSentiment();
 
@@ -19,7 +19,7 @@ export default async function Home() {
           <div className="flex items-center gap-4">
             <div className="flex items-center text-sm text-muted-foreground">
               <RefreshCcw className="mr-1 h-4 w-4" />
-              Auto-refreshes every 1 hour
+              Auto-refreshes every 60 minutes
             </div>
             <ThemeToggle />
           </div>
@@ -33,11 +33,10 @@ export default async function Home() {
         <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-3">
           <StockSentimentChart data={stockData} />
         </div>
-        
-        <div>
+        {/*<div>
           <h2 className="text-2xl font-bold mb-4">Stock Sentiment Data</h2>
           <StockSentimentTable data={stockData} />
-        </div>
+        </div>    */}
       </main>
       
       <footer className="border-t py-6">
