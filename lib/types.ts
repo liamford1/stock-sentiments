@@ -5,4 +5,5 @@ export interface StockSentiment {
   hour: string;
   day: string;
   '4_hour': string;
+  '12_hour': string;
 }

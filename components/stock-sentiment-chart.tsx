@@ -8,6 +8,7 @@ interface StockSentiment {
   Ticker: string;
   hour: string | number;
   "4_hour": string | number;
+  "12_hour": string | number;
   day: string | number;
   Sentiment: string;
 }
@@ -22,6 +23,7 @@ export default function StockSentimentChart({ data }: StockSentimentChartProps) 
     ...item,
     hour: typeof item.hour === 'string' ? parseInt(item.hour, 10) : item.hour,
     "4_hour": typeof item["4_hour"] === 'string' ? parseInt(item["4_hour"], 10) : item["4_hour"],
+    "12_hour": typeof item["12_hour"] === 'string' ? parseInt(item["12_hour"], 10) : item["12_hour"],
     day: typeof item.day === 'string' ? parseInt(item.day, 10) : item.day,
     // Fields not from API are left undefined
     "2_day": undefined as number | undefined,
@@ -35,13 +37,15 @@ export default function StockSentimentChart({ data }: StockSentimentChartProps) 
     // Calculate percentage changes only for available fields
     const hourChange = item.hour !== 0 ? ((item.hour as number) / 1) * 100 : 0;
     const fourHourChange = item.hour !== 0 ? (((item["4_hour"] as number) - (item.hour as number)) / (item.hour as number)) * 100 : 0;
-    const dayChange = item["4_hour"] !== 0 ? (((item.day as number) - (item["4_hour"] as number)) / (item["4_hour"] as number)) * 100 : 0;
+    const twelveHourChange = item["4_hour"] !== 0 ? (((item["12_hour"] as number) - (item["4_hour"] as number)) / (item["4_hour"] as number)) * 100 : 0;
+    const dayChange = item["12_hour"] !== 0 ? (((item.day as number) - (item["12_hour"] as number)) / (item["12_hour"] as number)) * 100 : 0;
 
     return {
       Rank: item.Rank,
       Ticker: item.Ticker,
       hourChange,
       fourHourChange,
+      twelveHourChange,
       dayChange,
       // Fields not calculated from API data are left undefined with explicit type annotations
       twoDayChange: undefined as number | undefined,
@@ -72,6 +76,7 @@ export default function StockSentimentChart({ data }: StockSentimentChartProps) 
                 <th className="border p-2">Stock Ticker</th>
                 <th className="border p-2">Hour</th>
                 <th className="border p-2">4 Hour</th>
+                <th className="border p-2">12 Hour</th>
                 <th className="border p-2">Day</th>
                 <th className="border p-2">2 Day</th>
                 <th className="border p-2">Week</th>
@@ -87,6 +92,7 @@ export default function StockSentimentChart({ data }: StockSentimentChartProps) 
                   <td className="border p-2 text-center">{item.Ticker}</td>
                   <td className="border p-2 text-right">{Number(item.hour).toLocaleString()}</td>
                   <td className="border p-2 text-right">{Number(item["4_hour"]).toLocaleString()}</td>
+                  <td className="border p-2 text-right">{Number(item["12_hour"]).toLocaleString()}</td>
                   <td className="border p-2 text-right">{Number(item.day).toLocaleString()}</td>
                   <td className="border p-2 text-right">-</td>
                   <td className="border p-2 text-right">-</td>
@@ -113,6 +119,7 @@ export default function StockSentimentChart({ data }: StockSentimentChartProps) 
                 <th className="border p-2">Stock Ticker</th>
                 <th className="border p-2">Hour</th>
                 <th className="border p-2">4 Hour</th>
+                <th className="border p-2">12 Hour</th>
                 <th className="border p-2">Day</th>
                 <th className="border p-2">2 Day</th>
                 <th className="border p-2">Week</th>
@@ -128,6 +135,7 @@ export default function StockSentimentChart({ data }: StockSentimentChartProps) 
                   <td className="border p-2 text-center">{item.Ticker}</td>
                   <td className="border p-2 text-right">{item.hourChange.toFixed(1)}%</td>
                   <td className="border p-2 text-right">{item.fourHourChange.toFixed(1)}%</td>
+                  <td className="border p-2 text-right">{item.twelveHourChange.toFixed(1)}%</td>
                   <td className="border p-2 text-right">{item.dayChange.toFixed(1)}%</td>
                   <td className="border p-2 text-right">-</td>
                   <td className="border p-2 text-right">-</td>
