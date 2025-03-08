@@ -83,6 +83,7 @@ export default function StockSentimentChart({ data }: StockSentimentChartProps) 
                 <th className="border p-2">2 Week</th>
                 <th className="border p-2">Sentiment Indicator</th>
                 <th className="border p-2">Prior Sentiment</th>
+                <th className="border p-2">Details</th>
               </tr>
             </thead>
             <tbody>
@@ -98,6 +99,7 @@ export default function StockSentimentChart({ data }: StockSentimentChartProps) 
                   <td className="border p-2 text-right">-</td>
                   <td className="border p-2 text-right">-</td>
                   <td className="border p-2 text-center">{item.Sentiment}</td>
+                  <td className="border p-2 text-center">-</td>
                   <td className="border p-2 text-center">-</td>
                 </tr>
               ))}
