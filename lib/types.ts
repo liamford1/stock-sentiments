@@ -1,9 +1,10 @@
 export interface StockSentiment {
-  Rank: string;
+  "12_hour": string;
+  "4_hour": string;
+  Sentiment: "positive" | "negative";
+  "Sentiment Indicator": string;
+  "Sentiment Score": number;
   Ticker: string;
-  Sentiment: 'positive' | 'negative';
-  hour: string;
   day: string;
-  '4_hour': string;
-  '12_hour': string;
+  hour: string;
 }

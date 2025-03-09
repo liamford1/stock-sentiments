@@ -4,6 +4,9 @@ import  StockSentimentChart from '@/components/stock-sentiment-chart';
 import { StockSentimentSummary } from '@/components/stock-sentiment-summary';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { BarChart3, RefreshCcw } from 'lucide-react';
+import PiChart from '@/components/pi-chart';
+import RadarChart from '@/components/radar-chart';
+
 export const dynamic = 'force-dynamic'
 export default async function Home() {
   const stockData = await fetchStockSentiment();
@@ -33,10 +36,10 @@ export default async function Home() {
         <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-3">
           <StockSentimentChart data={stockData} />
         </div>
-        {/*<div>
-          <h2 className="text-2xl font-bold mb-4">Stock Sentiment Data</h2>
-          <StockSentimentTable data={stockData} />
-        </div>    */}
+        <div className="flex flex-col md:flex-row gap-4 justify-center">
+          <PiChart data={stockData} />
+          <RadarChart data={stockData} />
+        </div>
       </main>
       
       <footer className="border-t py-6">

@@ -1,16 +1,17 @@
-"use client";
+'use client';
 
 import React from "react";
 
-// This interface should match your existing StockSentiment type
-interface StockSentiment {
-  Rank: string;
-  Ticker: string;
-  hour: string | number;
-  "4_hour": string | number;
+// Update the interface to allow string or number for time-based fields
+export interface StockSentiment {
   "12_hour": string | number;
+  "4_hour": string | number;
+  Sentiment: "positive" | "negative";
+  "Sentiment Indicator": string;
+  "Sentiment Score": number;
+  Ticker: string;
   day: string | number;
-  Sentiment: string;
+  hour: string | number;
 }
 
 interface StockSentimentChartProps {
@@ -18,89 +19,94 @@ interface StockSentimentChartProps {
 }
 
 export default function StockSentimentChart({ data }: StockSentimentChartProps) {
-  // Convert string values to numbers for calculations
-  const processedData = data.map(item => ({
-    ...item,
-    hour: typeof item.hour === 'string' ? parseInt(item.hour, 10) : item.hour,
-    "4_hour": typeof item["4_hour"] === 'string' ? parseInt(item["4_hour"], 10) : item["4_hour"],
-    "12_hour": typeof item["12_hour"] === 'string' ? parseInt(item["12_hour"], 10) : item["12_hour"],
-    day: typeof item.day === 'string' ? parseInt(item.day, 10) : item.day,
-    // Fields not from API are left undefined
-    "2_day": undefined as number | undefined,
-    week: undefined as number | undefined,
-    "2_week": undefined as number | undefined,
-    prior_sentiment: undefined as string | undefined
-  }));
+  // Compute ranking based on the best sentiment (highest Sentiment Score gets Rank 1)
+  const rankedData = data
+    .slice() // create a copy so we don't mutate the original array
+    .sort((a, b) => b["Sentiment Score"] - a["Sentiment Score"])
+    .map((item, index) => ({
+      ...item,
+      Rank: index + 1, // assign rank based on sorted order
+    }));
 
-  // Calculate percentage changes for the second table (only for available data)
-  const percentChangeData = processedData.map((item) => {
-    // Calculate percentage changes only for available fields
-    const hourChange = item.hour !== 0 ? ((item.hour as number) / 1) * 100 : 0;
-    const fourHourChange = item.hour !== 0 ? (((item["4_hour"] as number) - (item.hour as number)) / (item.hour as number)) * 100 : 0;
-    const twelveHourChange = item["4_hour"] !== 0 ? (((item["12_hour"] as number) - (item["4_hour"] as number)) / (item["4_hour"] as number)) * 100 : 0;
-    const dayChange = item["12_hour"] !== 0 ? (((item.day as number) - (item["12_hour"] as number)) / (item["12_hour"] as number)) * 100 : 0;
+  // Calculate percentage changes between periods.
+  // Convert string values to numbers as needed.
+  const percentChangeData = rankedData.map(item => {
+    const hourVal =
+      typeof item.hour === "string" ? parseFloat(item.hour) : item.hour;
+    const fourHourVal =
+      typeof item["4_hour"] === "string" ? parseFloat(item["4_hour"]) : item["4_hour"];
+    const twelveHourVal =
+      typeof item["12_hour"] === "string" ? parseFloat(item["12_hour"]) : item["12_hour"];
+    const dayVal =
+      typeof item.day === "string" ? parseFloat(item.day) : item.day;
+
+    // Calculate changes; if baseline is 0, display as 0%
+    const fourHourChange =
+      hourVal !== 0 ? ((fourHourVal - hourVal) / hourVal) * 100 : 0;
+    const twelveHourChange =
+      fourHourVal !== 0 ? ((twelveHourVal - fourHourVal) / fourHourVal) * 100 : 0;
+    const dayChange =
+      twelveHourVal !== 0 ? ((dayVal - twelveHourVal) / twelveHourVal) * 100 : 0;
 
     return {
       Rank: item.Rank,
       Ticker: item.Ticker,
-      hourChange,
+      hourChange: null as null | number, // No previous period for hour change
       fourHourChange,
       twelveHourChange,
       dayChange,
-      // Fields not calculated from API data are left undefined with explicit type annotations
-      twoDayChange: undefined as number | undefined,
-      weekChange: undefined as number | undefined,
-      twoWeekChange: undefined as number | undefined,
-      sentiment: item.Sentiment,
-      prior_sentiment: item.prior_sentiment
+      Sentiment: item.Sentiment,
+      "Sentiment Indicator": item["Sentiment Indicator"],
+      "Sentiment Score": item["Sentiment Score"],
     };
   });
-
-  // Sort percentage change data by rank
-  const sortedPercentData = [...percentChangeData].sort((a, b) => 
-    parseInt(a.Rank) - parseInt(b.Rank)
-  );
 
   return (
     <div className="container mx-auto p-4 space-y-8 col-span-3">
       {/* --------------------------------------- */}
-      {/* Table 1: Number of Posts (000's)       */}
+      {/* Table 1: Raw Data */}
       {/* --------------------------------------- */}
       <div>
-        <h2 className="text-xl font-bold mb-2">Number of Posts (000's)</h2>
+        <h2 className="text-xl font-bold mb-2">Raw Data</h2>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse mb-8 text-sm">
             <thead>
               <tr className="bg-gray-200 dark:bg-gray-800">
                 <th className="border p-2">Rank</th>
-                <th className="border p-2">Stock Ticker</th>
+                <th className="border p-2">Ticker</th>
                 <th className="border p-2">Hour</th>
                 <th className="border p-2">4 Hour</th>
                 <th className="border p-2">12 Hour</th>
                 <th className="border p-2">Day</th>
-                <th className="border p-2">2 Day</th>
-                <th className="border p-2">Week</th>
-                <th className="border p-2">2 Week</th>
+                <th className="border p-2">Sentiment</th>
                 <th className="border p-2">Sentiment Indicator</th>
-                <th className="border p-2">Prior Sentiment</th>
-                <th className="border p-2">Details</th>
+                <th className="border p-2">Sentiment Score</th>
               </tr>
             </thead>
             <tbody>
-              {processedData.map((item) => (
-                <tr key={item.Rank}>
+              {rankedData.map(item => (
+                <tr key={item.Ticker}>
                   <td className="border p-2 text-center">{item.Rank}</td>
                   <td className="border p-2 text-center">{item.Ticker}</td>
-                  <td className="border p-2 text-right">{Number(item.hour).toLocaleString()}</td>
-                  <td className="border p-2 text-right">{Number(item["4_hour"]).toLocaleString()}</td>
-                  <td className="border p-2 text-right">{Number(item["12_hour"]).toLocaleString()}</td>
-                  <td className="border p-2 text-right">{Number(item.day).toLocaleString()}</td>
-                  <td className="border p-2 text-right">-</td>
-                  <td className="border p-2 text-right">-</td>
-                  <td className="border p-2 text-right">-</td>
+                  <td className="border p-2 text-right">
+                    {Number(item.hour).toLocaleString()}
+                  </td>
+                  <td className="border p-2 text-right">
+                    {Number(item["4_hour"]).toLocaleString()}
+                  </td>
+                  <td className="border p-2 text-right">
+                    {Number(item["12_hour"]).toLocaleString()}
+                  </td>
+                  <td className="border p-2 text-right">
+                    {Number(item.day).toLocaleString()}
+                  </td>
                   <td className="border p-2 text-center">{item.Sentiment}</td>
-                  <td className="border p-2 text-center">-</td>
-                  <td className="border p-2 text-center">-</td>
+                  <td className="border p-2 text-center">
+                    {item["Sentiment Indicator"]}
+                  </td>
+                  <td className="border p-2 text-center">
+                    {item["Sentiment Score"]}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -109,7 +115,7 @@ export default function StockSentimentChart({ data }: StockSentimentChartProps) 
       </div>
 
       {/* --------------------------------------- */}
-      {/* Table 2: % Change in Posts             */}
+      {/* Table 2: % Change in Posts */}
       {/* --------------------------------------- */}
       <div>
         <h2 className="text-xl font-bold mb-2">% Change in Posts</h2>
@@ -118,32 +124,40 @@ export default function StockSentimentChart({ data }: StockSentimentChartProps) 
             <thead>
               <tr className="bg-gray-200 dark:bg-gray-800">
                 <th className="border p-2">Rank</th>
-                <th className="border p-2">Stock Ticker</th>
-                <th className="border p-2">Hour</th>
-                <th className="border p-2">4 Hour</th>
-                <th className="border p-2">12 Hour</th>
-                <th className="border p-2">Day</th>
-                <th className="border p-2">2 Day</th>
-                <th className="border p-2">Week</th>
-                <th className="border p-2">2 Week</th>
+                <th className="border p-2">Ticker</th>
+                <th className="border p-2">Hour Change</th>
+                <th className="border p-2">4 Hour Change</th>
+                <th className="border p-2">12 Hour Change</th>
+                <th className="border p-2">Day Change</th>
+                <th className="border p-2">Sentiment</th>
                 <th className="border p-2">Sentiment Indicator</th>
-                <th className="border p-2">Prior Sentiment</th>
+                <th className="border p-2">Sentiment Score</th>
               </tr>
             </thead>
             <tbody>
-              {sortedPercentData.map((item) => (
-                <tr key={item.Rank}>
+              {percentChangeData.map(item => (
+                <tr key={item.Ticker}>
                   <td className="border p-2 text-center">{item.Rank}</td>
                   <td className="border p-2 text-center">{item.Ticker}</td>
-                  <td className="border p-2 text-right">{item.hourChange.toFixed(1)}%</td>
-                  <td className="border p-2 text-right">{item.fourHourChange.toFixed(1)}%</td>
-                  <td className="border p-2 text-right">{item.twelveHourChange.toFixed(1)}%</td>
-                  <td className="border p-2 text-right">{item.dayChange.toFixed(1)}%</td>
-                  <td className="border p-2 text-right">-</td>
-                  <td className="border p-2 text-right">-</td>
-                  <td className="border p-2 text-right">-</td>
-                  <td className="border p-2 text-center">{item.sentiment}</td>
-                  <td className="border p-2 text-center">-</td>
+                  <td className="border p-2 text-center">
+                    {item.hourChange === null ? "-" : `${item.hourChange.toFixed(1)}%`}
+                  </td>
+                  <td className="border p-2 text-right">
+                    {item.fourHourChange.toFixed(1)}%
+                  </td>
+                  <td className="border p-2 text-right">
+                    {item.twelveHourChange.toFixed(1)}%
+                  </td>
+                  <td className="border p-2 text-right">
+                    {item.dayChange.toFixed(1)}%
+                  </td>
+                  <td className="border p-2 text-center">{item.Sentiment}</td>
+                  <td className="border p-2 text-center">
+                    {item["Sentiment Indicator"]}
+                  </td>
+                  <td className="border p-2 text-center">
+                    {item["Sentiment Score"]}
+                  </td>
                 </tr>
               ))}
             </tbody>
