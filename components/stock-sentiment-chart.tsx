@@ -67,7 +67,7 @@ export default function StockSentimentChart({ data }: StockSentimentChartProps) 
       {/* Table 1: Raw Data */}
       {/* --------------------------------------- */}
       <div>
-        <h2 className="text-xl font-bold mb-2">Raw Data</h2>
+        <h2 className="text-xl font-bold mb-2">Number of posts (000's)</h2>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse mb-8 text-sm">
             <thead>
